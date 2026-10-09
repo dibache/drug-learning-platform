@@ -27,7 +27,6 @@
         .back-link { color: #a3a1ad; text-decoration: none; font-size: 14px; transition: color 0.3s; }
         .back-link:hover { color: #fff; }
 
-        /* کارت سوال شیشه‌ای */
         .question-card {
             background: rgba(15, 15, 20, 0.65); backdrop-filter: blur(14px);
             border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px;
@@ -104,35 +103,49 @@
                 <div class="question-card">
                     <div class="q-number">سوال {{ forloop.counter }}</div>
                     <div class="q-text">{{ q.text }}</div>
-                    
+
+                    {% if q.image %}
+                        <div style="margin-bottom: 20px; text-align: center;">
+                            <img src="{{ q.image.url }}" alt="تصویر بالینی سوال" style="max-width: 100%; max-height: 350px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                        </div>
+                    {% endif %}
+
                     <div class="form-check">
-                        <input type="radio" name="q_{{ q.id }}" value="A" id="q{{ q.id }}_a">
+                        <input type="radio" name="q_{{ q.id }}" value="A" id="q{{ q.id }}_a" {% if submitted %}disabled{% endif %}>
                         <label for="q{{ q.id }}_a">الف) {{ q.option_a }}</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" name="q_{{ q.id }}" value="B" id="q{{ q.id }}_b">
+                        <input type="radio" name="q_{{ q.id }}" value="B" id="q{{ q.id }}_b" {% if submitted %}disabled{% endif %}>
                         <label for="q{{ q.id }}_b">ب) {{ q.option_b }}</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" name="q_{{ q.id }}" value="C" id="q{{ q.id }}_c">
+                        <input type="radio" name="q_{{ q.id }}" value="C" id="q{{ q.id }}_c" {% if submitted %}disabled{% endif %}>
                         <label for="q{{ q.id }}_c">ج) {{ q.option_c }}</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" name="q_{{ q.id }}" value="D" id="q{{ q.id }}_d">
+                        <input type="radio" name="q_{{ q.id }}" value="D" id="q{{ q.id }}_d" {% if submitted %}disabled{% endif %}>
                         <label for="q{{ q.id }}_d">د) {{ q.option_d }}</label>
                     </div>
 
-                    {% if q.explanation %}
+                    {% if submitted and q.explanation %}
                         <div class="explanation-box">
                             <strong>پاسخ تشریحی:</strong> {{ q.explanation }}
+                            <br><span style="font-size: 12px; color: {% if q.user_is_correct %}#2ecc71{% else %}#e74c3c{% endif %};">
+                                پاسخ شما: <strong>{{ q.user_answer|default:"پاسخ نداده‌اید" }}</strong> | پاسخ صحیح: <strong>{{ q.correct_option }}</strong>
+                            </span>
                         </div>
                     {% endif %}
-                    
+
                     <div class="card-footer-action">
-                        <span class="drug-badge">تگ دارو: {{ q.drug_tag }}</span>
-                        <button type="submit" name="action" value="add_flashcard" formaction="{% url 'module_detail' module.id %}" class="btn-flashcard" onclick="this.form.drug_name.value='{{ q.drug_tag }}'; this.form.drug_info.value='{{ q.explanation }}';">
-                            ➕ افزودن "{{ q.drug_tag }}" به لایتنر
-                        </button>
+                        {% if submitted %}
+                            <span class="drug-badge">تگ دارو: {{ q.drug_tag }}</span>
+                            <!-- ارسال نام دارو به فلش‌کارت جهت دریافت متن اصلی ادمین -->
+                            <button type="submit" name="action" value="add_flashcard" formaction="{% url 'module_detail' module.id %}" class="btn-flashcard" onclick="this.form.drug_name.value='{{ q.drug_tag }}';">
+                                ➕ افزودن "{{ q.drug_tag }}" به لایتنر
+                            </button>
+                        {% else %}
+                            <span style="font-size: 12px; color: #a3a1ad; font-style: italic;">پس از ثبت پاسخ، تگ دارو و امکان افزودن به لایتنر نمایان می‌شود.</span>
+                        {% endif %}
                     </div>
                 </div>
             {% empty %}
@@ -140,12 +153,13 @@
                     سوالی برای این مبحث ثبت نشده است.
                 </div>
             {% endfor %}
-            
-            <input type="hidden" name="drug_name" value="">
-            <input type="hidden" name="drug_info" value="">
 
-            {% if questions %}
+            <input type="hidden" name="drug_name" value="">
+
+            {% if questions and not submitted %}
                 <button type="submit" class="submit-all-btn">ثبت تست‌ها و دریافت پاداش سکه 🪙</button>
+            {% elif submitted %}
+                <a href="{% url 'learning' %}" class="submit-all-btn" style="text-align: center; display: block; text-decoration: none;">بازگشت به لیست مباحث</a>
             {% endif %}
         </form>
     </div>

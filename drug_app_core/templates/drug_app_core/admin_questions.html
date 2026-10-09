@@ -27,8 +27,8 @@
         </div>
 
         <div class="card-box">
-            <h3 style="margin-top: 0; font-size: 18px; color: #0dcaf0;">طراحی سوال جدید برای مباحث</h3>
-            <form method="POST">
+            <h3 style="margin-top: 0; font-size: 18px; color: #0dcaf0;">طراحی سوال و سناریو بالینی جدید</h3>
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <label style="font-size: 13px; color: #a3a1ad; display: block; margin-bottom: 5px;">انتخاب مبحث مربوطه</label>
                 <select name="module_id" class="form-control" required>
@@ -39,6 +39,10 @@
 
                 <label style="font-size: 13px; color: #a3a1ad; display: block; margin-bottom: 5px;">متن سوال یا سناریو بالینی</label>
                 <textarea name="text" class="form-control" rows="3" required placeholder="سوال خود را بنویسید..."></textarea>
+
+                <!-- فیلد عکس سوال -->
+                <label style="font-size: 13px; color: #a3a1ad; display: block; margin-bottom: 5px;">تصویر بالینی / تست آزمایشگاهی (اختیاری)</label>
+                <input type="file" name="image" class="form-control" accept="image/*" style="padding: 10px;">
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <input type="text" name="option_a" class="form-control" required placeholder="گزینه الف">
@@ -55,7 +59,9 @@
                     <option value="D">گزینه د</option>
                 </select>
 
-                <textarea name="explanation" class="form-control" rows="2" placeholder="توضیحات پاسخنامه (اختیاری)"></textarea>
+                <textarea name="explanation" class="form-control" rows="2" placeholder="توضیحات پاسخنامه تشریحی"></textarea>
+
+                <input type="text" name="drug_tag" class="form-control" placeholder="نام دارو برای تگ لایتنر (مثلاً آمپی‌سیلین)">
 
                 <button type="submit" class="btn-custom">ذخیره سوال جدید</button>
             </form>

@@ -7,50 +7,42 @@
     <title>جعبه لایتنر - سامانه اطلاعات دارویی</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        body { 
-            background-color: #050505; color: #ededed; font-family: system-ui, sans-serif; 
-            margin: 0; padding: 0; padding-bottom: 100px; min-height: 100vh;
-        }
-        .bg-image-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            background-position: center; background-size: cover;
-        }
-        .bg-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(5,5,5,0.6) 0%, rgba(5,5,5,0.9) 100%); z-index: -1;
-        }
-        .container { max-width: 900px; margin: 0 auto; padding: 30px 20px; box-sizing: border-box; }
+        body { background-color: #050505; color: #ededed; font-family: system-ui, sans-serif; margin: 0; padding: 0; padding-bottom: 120px; min-height: 100vh; }
+        .bg-image-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); background-size: cover; }
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(5,5,5,0.6) 0%, rgba(5,5,5,0.9) 100%); z-index: -1; }
+        .container { max-width: 800px; margin: 0 auto; padding: 30px 20px; box-sizing: border-box; }
         
-        .page-header { margin-bottom: 25px; }
-        .page-title { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-        .page-subtitle { font-size: 14px; color: #a3a1ad; }
+        .page-header { text-align: center; margin-bottom: 25px; }
+        .page-title { font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+        .page-subtitle { color: #a3a1ad; font-size: 14px; }
 
-        /* گرید کارت‌های لایتنر */
-        .flashcards-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;
-        }
-        .flashcard-box {
-            background: rgba(15, 15, 20, 0.65); backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px;
-            padding: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            display: flex; flex-direction: column; justify-content: space-between;
-            transition: transform 0.3s ease;
-        }
-        .flashcard-box:hover { transform: translateY(-3px); border-color: #0dcaf0; }
-        .drug-title { font-size: 18px; font-weight: 700; color: #0dcaf0; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .drug-text { font-size: 14px; color: #ededed; line-height: 1.6; margin-bottom: 20px; }
-        .box-badge {
-            align-self: flex-start; background: rgba(255, 193, 7, 0.15); color: #ffc107;
-            padding: 6px 14px; border-radius: 50rem; font-size: 12px; font-weight: 600;
-            border: 1px solid rgba(255, 193, 7, 0.3);
-        }
+        /* تب‌ها */
+        .tab-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+        .tab-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #a3a1ad; padding: 10px 20px; border-radius: 50rem; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.3s; }
+        .tab-btn.active { background: #0dcaf0; color: #000; border-color: #0dcaf0; box-shadow: 0 5px 15px rgba(13,202,240,0.3); }
 
-        .empty-state {
-            background: rgba(15, 15, 20, 0.65); backdrop-filter: blur(14px);
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* کارت لایتنر شیشه‌ای */
+        .flashcard-item {
+            background: rgba(15, 15, 20, 0.7); backdrop-filter: blur(14px);
             border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px;
-            padding: 40px; text-align: center; color: #a3a1ad; grid-column: 1 / -1;
+            padding: 25px; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            transition: 0.3s;
         }
+        .flashcard-item:hover { border-color: rgba(13, 202, 240, 0.3); }
+        
+        .drug-title { font-size: 20px; font-weight: 700; color: #0dcaf0; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        
+        .drug-specs {
+            background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 15px; border-radius: 12px; font-size: 15px; color: #ededed; line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #a3a1ad; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; }
+        .level-badge { background: rgba(13, 202, 240, 0.15); color: #0dcaf0; padding: 5px 12px; border-radius: 50rem; font-weight: 600; }
 
         /* منوی پایین */
         .bottom-nav {
@@ -61,11 +53,7 @@
             display: flex; justify-content: space-around; align-items: center;
             padding: 10px 15px; z-index: 1000; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
-        .nav-item {
-            color: #a3a1ad; text-decoration: none; font-size: 12px; font-weight: 500;
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            padding: 8px 14px; border-radius: 50rem; transition: all 0.3s ease;
-        }
+        .nav-item { color: #a3a1ad; text-decoration: none; font-size: 12px; font-weight: 500; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 14px; border-radius: 50rem; transition: all 0.3s ease; }
         .nav-item i { font-size: 20px; }
         .nav-item:hover, .nav-item.active { color: #fff; background: rgba(13, 202, 240, 0.15); transform: translateY(-2px); }
         .nav-item.active { color: #0dcaf0; }
@@ -78,26 +66,76 @@
 
     <div class="container">
         <div class="page-header">
-            <div class="page-title">📦 جعبه لایتنر فلش‌کارت‌های دارویی</div>
-            <div class="page-subtitle">مرور فعال نکات بالینی و داروهایی که از تست‌ها به لایتنر اضافه کرده‌اید</div>
+            <h2 class="page-title">📦 جعبه لایتنر فلش‌کارت‌های دارویی</h2>
+            <div class="page-subtitle">مرور فعال نکات بالینی و مشخصات داروها</div>
         </div>
 
-        <div class="flashcards-grid">
-            {% for card in cards %}
-                <div class="flashcard-box">
-                    <div>
-                        <div class="drug-title">💊 {{ card.drug_name }}</div>
-                        <div class="drug-text"><strong>توصیه بالینی:</strong> {{ card.back_text }}</div>
+        <!-- دکمه‌های جابه‌جایی بین دو بخش -->
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="switchTab('admin', this)">تمامی فلش‌کارت‌های مرجع ({{ admin_cards.count }})</button>
+            <button class="tab-btn" onclick="switchTab('user', this)">نقاط ضعف و شخصی ({{ user_cards.count }})</button>
+        </div>
+
+        <!-- بخش اول: تمامی فلش‌کارت‌های ادمین -->
+        <div id="admin-tab" class="tab-content active">
+            {% for card in admin_cards %}
+                <div class="flashcard-item">
+                    <div class="drug-title">
+                        <i class="bi bi-capsule"></i> {{ card.drug_name }}
                     </div>
-                    <div class="box-badge">سطح لایتنر: جعبه {{ card.box_level }}</div>
+                    <div class="drug-specs">
+                        <strong>مشخصات و نکات بالینی:</strong><br>
+                        {{ card.back_text }}
+                    </div>
+                    <div class="card-meta">
+                        <span class="level-badge">مرجع اصلی ادمین</span>
+                        <span>آماده مرور</span>
+                    </div>
                 </div>
             {% empty %}
-                <div class="empty-state">
-                    هنوز دارویی به لایتنر اضافه نکرده‌اید. با حل تست‌ها و کلیک روی دکمه افزودن به لایتنر، کارت‌های خود را بسازید.
+                <div style="text-align: center; color: #a3a1ad; padding: 40px; background: rgba(15,15,20,0.6); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08);">
+                    هنوز فلش‌کارتی توسط مدیر سیستم ثبت نشده است.
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- بخش دوم: نقاط ضعف و فلش‌کارت‌های شخصی -->
+        <div id="user-tab" class="tab-content">
+            {% for card in user_cards %}
+                <div class="flashcard-item">
+                    <div class="drug-title">
+                        <i class="bi bi-capsule"></i> {{ card.drug_name }}
+                    </div>
+                    <div class="drug-specs">
+                        <strong>نکته اختصاصی:</strong><br>
+                        {{ card.back_text }}
+                    </div>
+                    <div class="card-meta">
+                        <span class="level-badge">سطح لایتنر: جعبه {{ card.box_level }}</span>
+                        <span>شخصی‌سازی شده</span>
+                    </div>
+                </div>
+            {% empty %}
+                <div style="text-align: center; color: #a3a1ad; padding: 40px; background: rgba(15,15,20,0.6); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08);">
+                    هنوز کارتی در بخش نقاط ضعف شما ثبت نشده است.
                 </div>
             {% endfor %}
         </div>
     </div>
+
+    <script>
+        function switchTab(tabName, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            if(tabName === 'admin') {
+                document.getElementById('admin-tab').classList.add('active');
+            } else {
+                document.getElementById('user-tab').classList.add('active');
+            }
+            btn.classList.add('active');
+        }
+    </script>
 
     <!-- منوی پایین -->
     <nav class="bottom-nav">

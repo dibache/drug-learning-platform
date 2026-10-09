@@ -29,4 +29,5 @@ urlpatterns = [
         name='admin_questions',
     ),
     path('custom-admin/users/', views.admin_users_view, name='admin_users'),
+    path('custom-admin/flashcards/', views.admin_flashcards_view, name='admin_flashcards'),
 ]

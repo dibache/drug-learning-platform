@@ -3,113 +3,80 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پنل مدیریت اختصاصی - سامانه اطلاعات دارویی</title>
+    <title>پنل مدیریت اختصاصی</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        body {
-            background-color: #050505; color: #ededed; font-family: system-ui, sans-serif;
-            margin: 0; padding: 0; min-height: 100vh;
-        }
-        .bg-image-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            background-position: center; background-size: cover;
-        }
-        .bg-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(5,5,5,0.6) 0%, rgba(5,5,5,0.9) 100%); z-index: -1;
-        }
+        body { background-color: #050505; color: #ededed; font-family: system-ui, sans-serif; margin: 0; padding: 0; min-height: 100vh; }
+        .bg-image { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); background-size: cover; }
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.8); z-index: -1; }
         .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; box-sizing: border-box; }
+        
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        .admin-title { font-size: 24px; font-weight: 700; color: #fff; }
+        .logout-btn { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.4); padding: 8px 16px; border-radius: 10px; text-decoration: none; font-size: 14px; transition: 0.3s; }
+        .logout-btn:hover { background: #e74c3c; color: #fff; }
 
-        .admin-header {
-            background: rgba(15, 15, 20, 0.75); backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px;
-            padding: 30px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        /* کارت‌های دسترسی سریع */
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .admin-card {
+            background: rgba(15, 15, 20, 0.7); backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 25px;
+            text-decoration: none; color: inherit; transition: all 0.3s ease;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4); display: flex; flex-direction: column; gap: 10px;
         }
-        .admin-title h2 { margin: 0 0 5px 0; color: #fff; font-weight: 700; }
-        .admin-title p { margin: 0; color: #0dcaf0; font-size: 14px; }
-
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;
-        }
-        .stat-card {
-            background: rgba(15, 15, 20, 0.65); backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px;
-            padding: 25px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
-        }
-        .stat-card:hover { transform: translateY(-3px); border-color: #0dcaf0; }
-        .stat-number { font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-        .stat-label { font-size: 13px; color: #a3a1ad; text-transform: uppercase; letter-spacing: 1px; }
-
-        .actions-box {
-            background: rgba(15, 15, 20, 0.65); backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px;
-            padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        .actions-title { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px; }
-
-        .btn-grid { display: flex; gap: 15px; flex-wrap: wrap; }
-        .btn-custom {
-            background: #0dcaf0; color: #000; padding: 12px 24px; border-radius: 12px;
-            font-weight: 600; text-decoration: none; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px;
-        }
-        .btn-custom:hover { background: #31d2f2; color: #fff; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(13, 202, 240, 0.3); }
-        .btn-secondary-custom {
-            background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        .btn-secondary-custom:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
+        .admin-card:hover { border-color: rgba(13, 202, 240, 0.4); transform: translateY(-3px); }
+        .admin-card i { font-size: 32px; color: #0dcaf0; }
+        .card-title { font-size: 18px; font-weight: 700; color: #fff; }
+        .card-desc { font-size: 13px; color: #a3a1ad; line-height: 1.4; }
+        .stat-badge { background: rgba(13, 202, 240, 0.15); color: #0dcaf0; padding: 4px 10px; border-radius: 50rem; font-size: 12px; font-weight: bold; width: fit-content; margin-top: 5px; }
     </style>
 </head>
 <body>
-
-    <div class="bg-image-container"></div>
+    <div class="bg-image"></div>
     <div class="bg-overlay"></div>
 
     <div class="container">
-        <!-- هدر پنل مدیریت -->
         <div class="admin-header">
-            <div class="admin-title">
-                <h2>⚡ پنل مدیریت اختصاصی سامانه</h2>
-                <p>خوش آمدید مدیر گرامی • مدیریت کامل بخش‌های آموزشی</p>
-            </div>
             <div>
-                <a href="{% url 'dashboard' %}" class="btn-custom btn-secondary-custom">← بازگشت به سایت</a>
+                <h2 class="admin-title">🛠️ پنل مدیریت سامانه آموزش دارو</h2>
+                <span style="color: #a3a1ad; font-size: 14px;">خوش آمدید، مدیر سیستم</span>
             </div>
+            <a href="{% url 'dashboard' %}" class="logout-btn">← بازگشت به سایت اصلی</a>
         </div>
 
-        <!-- کارت‌های آمار کلی سامانه -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number">{{ users_count }}</div>
-                <div class="stat-label">دانشجویان ثبت‌نامی</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ modules_count }}</div>
-                <div class="stat-label">مباحث ۱۲ گانه</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ questions_count }}</div>
-                <div class="stat-label">سوالات و سناریوها</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ flashcards_count }}</div>
-                <div class="stat-label">فلش‌کارت‌های لایتنر</div>
-            </div>
-        </div>
+        <div class="admin-grid">
+            <!-- مدیریت مباحث -->
+            <a href="{% url 'admin_modules' %}" class="admin-card">
+                <i class="bi bi-journal-bookmark-fill"></i>
+                <div class="card-title">مدیریت مباحث</div>
+                <div class="card-desc">ایجاد و ویرایش فصل‌ها و سرفصل‌های اطلاعات دارویی</div>
+                <div class="stat-badge">{{ modules_count }} مبحث ثبت شده</div>
+            </a>
 
-        <!-- دکمه‌های دسترسی سریع به مدیریت ادمین اصلی جنگو برای افزودن محتوا -->
-        <div class="actions-box">
-            <div class="actions-title">مدیریت و افزودن محتوا</div>
-            <div class="btn-grid">
-                <a href="{% url 'admin_modules' %}" class="btn-custom"><i class="bi bi-book"></i> مدیریت مباحث</a>
-                <a href="{% url 'admin_questions' %}" class="btn-custom"><i class="bi bi-question-circle"></i> افزودن و مدیریت سوالات</a>
-                <a href="{% url 'admin_users' %}" class="btn-custom"><i class="bi bi-people"></i> مدیریت کاربران و سکه‌ها</a>
-            </div>
+            <!-- مدیریت سوالات -->
+            <a href="{% url 'admin_questions' %}" class="admin-card">
+                <i class="bi bi-question-circle-fill"></i>
+                <div class="card-title">مدیریت سوالات و تست‌ها</div>
+                <div class="card-desc">طراحی سناریوهای بالینی، گزینه‌ها و پاسخ‌های تشریحی</div>
+                <div class="stat-badge">{{ questions_count }} سوال ثبت شده</div>
+            </a>
+
+            <!-- مدیریت فلش‌کارت‌ها (جدید) -->
+            <a href="{% url 'admin_flashcards' %}" class="admin-card">
+                <i class="bi bi-layers-fill"></i>
+                <div class="card-title">مدیریت فلش‌کارت‌های لایتنر</div>
+                <div class="card-desc">افزودن فلش‌کارت و نکات بالینی اختصاصی به جعبه لایتنر کاربران</div>
+                <div class="stat-badge">{{ flashcards_count }} فلش‌کارت</div>
+            </a>
+
+            <!-- مدیریت کاربران -->
+            <a href="{% url 'admin_users' %}" class="admin-card">
+                <i class="bi bi-people-fill"></i>
+                <div class="card-title">مدیریت کاربران و سکه‌ها</div>
+                <div class="card-desc">بررسی لیست دانشجویان و پاداش‌دهی یا مدیریت سکه‌ها</div>
+                <div class="stat-badge">{{ users_count }} دانشجو</div>
+            </a>
         </div>
     </div>
-
 </body>
 </html>

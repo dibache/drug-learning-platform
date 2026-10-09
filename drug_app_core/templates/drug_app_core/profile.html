@@ -9,7 +9,7 @@
     <style>
         body {
             background-color: #050505; color: #ededed; font-family: system-ui, sans-serif;
-            margin: 0; padding: 0; padding-bottom: 100px; min-height: 100vh;
+            margin: 0; padding: 0; padding-bottom: 120px; min-height: 100vh;
         }
         .bg-image-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
@@ -53,11 +53,11 @@
         .info-val { color: #fff; font-weight: 600; }
 
         .logout-btn {
-            background: rgba(255, 59, 29, 0.15); color: #ff3b1d; border: 1px solid rgba(255, 59, 29, 0.3);
+            background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.4);
             width: 100%; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer;
             text-decoration: none; display: block; transition: all 0.3s ease; box-sizing: border-box;
         }
-        .logout-btn:hover { background: #ff3b1d; color: #fff; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255, 59, 29, 0.3); }
+        .logout-btn:hover { background: #e74c3c; color: #fff; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3); }
 
         /* منوی پایین */
         .bottom-nav {
@@ -111,11 +111,11 @@
                 </div>
             </div>
 
-            <a href="{% url 'logout' %}" class="logout-btn">خروج از حساب کاربری</a>
+            <a href="{% url 'logout' %}" class="logout-btn">🚪 خروج از حساب کاربری</a>
         </div>
     </div>
 
-   <!-- منوی پایین -->
+    <!-- منوی پایین -->
     <nav class="bottom-nav">
         <a href="{% url 'dashboard' %}" class="nav-item">
             <i class="bi bi-house-door-fill"></i>

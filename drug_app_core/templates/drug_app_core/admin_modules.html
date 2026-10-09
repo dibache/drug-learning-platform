@@ -38,18 +38,21 @@
             </form>
         </div>
 
-        <div class="card-box">
-            <h3 style="margin-top: 0; font-size: 18px; margin-bottom: 15px;">مباحث موجود در سامانه</h3>
-            {% for m in modules %}
-                <div class="module-item">
-                    <div>
-                        <strong>{{ m.order }}. {{ m.title }}</strong>
-                        <div style="font-size: 13px; color: #a3a1ad; margin-top: 4px;">{{ m.description|truncatechars:50 }}</div>
-                    </div>
-                </div>
-            {% empty %}
-                <p style="color: #a3a1ad; text-align: center;">هنوز مبحثی ثبت نشده است.</p>
-            {% endfor %}
+       <div class="card-box">
+            <h3 style="margin-top: 0; font-size: 18px; color: #0dcaf0;">افزودن مبحث جدید با تصویر</h3>
+            <!-- اضافه کردن enctype برای پشتیبانی از ارسال فایل -->
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="text" name="title" class="form-control" required placeholder="عنوان مبحث (مثلاً آنتی‌بیوتیک‌ها)">
+                <textarea name="description" class="form-control" rows="3" placeholder="توضیحات کوتاه مبحث..."></textarea>
+
+                <!-- فیلد انتخاب تصویر -->
+                <label style="font-size: 13px; color: #a3a1ad; display: block; margin-bottom: 5px;">تصویر مبحث (اختیاری)</label>
+                <input type="file" name="image" class="form-control" accept="image/*" style="padding: 10px;">
+
+                <input type="number" name="order" class="form-control" placeholder="ترتیب نمایش (عدد)" value="1">
+                <button type="submit" class="btn-custom">ثبت و ایجاد مبحث</button>
+            </form>
         </div>
     </div>
 </body>
