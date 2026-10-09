@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سامانه آموزش اطلاعات دارویی</title>
+    <style>
+        body { 
+            background-color: #050505; color: #ededed; font-family: system-ui, sans-serif; 
+            margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; overflow-x: hidden; 
+        }
+
+        .bg-image-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            background-position: center; background-size: cover;
+        }
+
+        .bg-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(5,5,5,0.5) 0%, rgba(5,5,5,0.85) 100%); z-index: -1;
+        }
+
+        /* --- باکس شیشه‌ای مرکزی --- */
+        .welcome-box {
+            width: 90%; max-width: 520px; 
+            background: rgba(15, 15, 20, 0.6);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 50px 40px; border-radius: 24px; 
+            border: 1px solid rgba(255,255,255,0.08); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4); box-sizing: border-box;
+            text-align: center;
+            animation: fadeIn 0.6s ease forwards;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .welcome-icon { font-size: 50px; margin-bottom: 20px; }
+        .welcome-title { font-size: 28px; font-weight: 600; margin-bottom: 12px; color: #fff; }
+        .welcome-subtitle { font-size: 14px; color: #a3a1ad; line-height: 1.6; margin-bottom: 35px; }
+
+        /* --- دکمه‌های شیک --- */
+        .btn-container {
+            display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;
+        }
+        .btn-custom {
+            flex: 1; min-width: 160px; padding: 15px 20px; border-radius: 12px;
+            font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none;
+            transition: all 0.3s ease; box-sizing: border-box; display: inline-block;
+        }
+        .btn-login {
+            background: #fff; color: #000; border: none;
+        }
+        .btn-login:hover {
+            background: #0dcaf0; color: #fff; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(13, 202, 240, 0.3);
+        }
+        .btn-register {
+            background: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .btn-register:hover {
+            background: rgba(255, 255, 255, 0.15); border-color: #fff; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-note {
+            margin-top: 30px; font-size: 12px; color: #6c757d; text-transform: uppercase; letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-image-container"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="welcome-box">
+        <div class="welcome-icon">💊</div>
+        <div class="welcome-title">سامانه آموزش اطلاعات دارویی</div>
+        <div class="welcome-subtitle">پلتفرم هوشمند آموزش بالینی، جعبه لایتنر و ارزیابی دانشجویان داروسازی (کارآموزی عرصه ۱)</div>
+
+        <div class="btn-container">
+            <a href="{% url 'login' %}" class="btn-custom btn-login">ورود به سامانه</a>
+            <a href="{% url 'register' %}" class="btn-custom btn-register">ثبت‌نام جدید</a>
+        </div>
+
+        <div class="footer-note">دانشکده داروسازی • محیط آموزشی پیشرفته</div>
+    </div>
+
+</body>
+</html>

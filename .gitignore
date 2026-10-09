@@ -1,0 +1,17 @@
+# Python / Django
+__pycache__/
+*.py[cod]
+*$py.class
+db.sqlite3
+media/
+staticfiles/
+
+# Virtual Environment
+drug_env/
+venv/
+env/
+.env
+
+# IDE
+.vscode/
+.idea/

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سامانه آموزش اطلاعات دارویی داروسازی</title>
+    <!-- بوت‌استرپ ۵ راست‌چین -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/rtl.min.css">
+    <style>
+        body { font-family: Tahoma, sans-serif; background-color: #f8f9fa; }
+        .navbar-brand { font-weight: bold; }
+        .coin-badge { background-color: #ffc107; color: #000; font-weight: bold; padding: 5px 10px; border-radius: 20px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'dashboard' %}">💊 کارآموزی اطلاعات دارویی</a>
+            <div class="d-flex align-items-center">
+                {% if user.is_authenticated %}
+                    <span class="coin-badge me-3">🪙 سکه‌ها: {{ request.user.userprofile.coins }}</span>
+                    <a href="{% url 'flashcards' %}" class="btn btn-outline-light btn-sm me-2">لایتنر (فلش‌کارت)</a>
+                    <a href="{% url 'ranking' %}" class="btn btn-outline-warning btn-sm me-2">رنکینگ و کاپ</a>
+                    <form action="{% url 'logout' %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">خروج</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
