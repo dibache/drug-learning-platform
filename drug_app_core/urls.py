@@ -30,4 +30,6 @@ urlpatterns = [
     ),
     path('custom-admin/users/', views.admin_users_view, name='admin_users'),
     path('custom-admin/flashcards/', views.admin_flashcards_view, name='admin_flashcards'),
+    path('custom-admin/tips/', views.admin_dailytips_view, name='admin_dailytips'),  # <-- اضافه شد
+    path('leitner-quiz/', views.leitner_quiz_view, name='leitner_quiz'),
 ]

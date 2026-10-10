@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>مدیریت نکات روزمره - پنل مدیریت</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #050505; color: #ededed; font-family: system-ui, sans-serif; margin: 0; padding: 0; min-height: 100vh; padding-bottom: 50px; }
+        .bg-image { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); background-size: cover; }
+        .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.8); z-index: -1; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; box-sizing: border-box; }
+        
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        .admin-title { font-size: 22px; font-weight: 700; color: #fff; margin: 0; }
+        .back-btn { background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 10px; text-decoration: none; font-size: 14px; transition: 0.3s; }
+        .back-btn:hover { background: rgba(255,255,255,0.15); }
+
+        .card-box {
+            background: rgba(15, 15, 20, 0.75); backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 25px;
+            margin-bottom: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; color: #a3a1ad; margin-bottom: 6px; font-weight: 600; }
+        .form-control {
+            width: 100%; background: rgba(20, 20, 25, 0.9); border: 1px solid rgba(255,255,255,0.15);
+            padding: 12px 16px; border-radius: 10px; color: #fff; font-size: 14px; box-sizing: border-box; outline: none; transition: 0.3s;
+        }
+        .form-control:focus { border-color: #0dcaf0; box-shadow: 0 0 10px rgba(13,202,240,0.3); }
+        textarea.form-control { resize: vertical; min-height: 100px; }
+
+        .btn-submit {
+            background: #0dcaf0; color: #000; border: none; padding: 12px 24px;
+            border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+        .btn-submit:hover { background: #31d2f2; transform: translateY(-2px); }
+
+        .tip-item {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px; padding: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;
+        }
+        .tip-info h4 { margin: 0 0 6px 0; color: #fff; font-size: 16px; }
+        .tip-info p { margin: 0 0 10px 0; color: #d1d5db; font-size: 13px; line-height: 1.5; white-space: pre-line; }
+        .badge-status { font-size: 11px; padding: 3px 8px; border-radius: 50rem; font-weight: bold; }
+        .badge-active { background: rgba(46,204,113,0.2); color: #2ecc71; border: 1px solid rgba(46,204,113,0.3); }
+        .badge-inactive { background: rgba(231,76,60,0.2); color: #e74c3c; border: 1px solid rgba(231,76,60,0.3); }
+
+        .tip-actions { display: flex; gap: 8px; flex-shrink: 0; }
+        .btn-danger-sm { background: rgba(231,76,60,0.2); color: #e74c3c; border: 1px solid rgba(231,76,60,0.4); padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; transition: 0.3s; }
+        .btn-danger-sm:hover { background: #e74c3c; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="container">
+        <div class="admin-header">
+            <h2 class="admin-title">💡 مدیریت نکات روزمره بالینی</h2>
+            <a href="{% url 'custom_admin' %}" class="back-btn"><i class="bi bi-arrow-right"></i> بازگشت به پنل</a>
+        </div>
+
+        <!-- فرم افزودن نکته جدید -->
+        <div class="card-box">
+            <h3 style="margin-top: 0; color: #fff; font-size: 18px; margin-bottom: 20px;">افزودن نکته روزمره جدید</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_tip">
+                <div class="form-group">
+                    <label>عنوان نکته</label>
+                    <input type="text" name="title" class="form-control" required placeholder="مثلاً نکته کلیدی مصرف آنتی‌بیوتیک‌ها">
+                </div>
+                <div class="form-group">
+                    <label>متن نکته</label>
+                    <textarea name="content" class="form-control" required placeholder="متن کامل نکته بالینی را اینجا بنویسید..."></textarea>
+                </div>
+                <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" name="is_active" id="is_active" checked style="width: 18px; height: 18px; accent-color: #0dcaf0;">
+                    <label for="is_active" style="margin: 0; cursor: pointer; color: #fff;">فعال باشد و در داشبورد نمایش داده شود</label>
+                </div>
+                <button type="submit" class="btn-submit">ثبت نکته جدید</button>
+            </form>
+        </div>
+
+        <!-- لیست نکات موجود -->
+        <div class="card-box">
+            <h3 style="margin-top: 0; color: #fff; font-size: 18px; margin-bottom: 20px;">لیست نکات ثبت‌شده</h3>
+            <div>
+                {% for tip in tips %}
+                    <div class="tip-item">
+                        <div style="flex-grow: 1;">
+                            <div class="tip-info">
+                                <h4>{{ tip.title }} 
+                                    {% if tip.is_active %}
+                                        <span class="badge-status badge-active">فعال</span>
+                                    {% else %}
+                                        <span class="badge-status badge-inactive">غیرفعال</span>
+                                    {% endif %}
+                                </h4>
+                                <p>{{ tip.content }}</p>
+                                <span style="font-size: 11px; color: #a3a1ad;">تاریخ ثبت: {{ tip.created_at|date:"Y/m/d H:i" }}</span>
+                            </div>
+
+                            <!-- فرم ویرایش درون‌خطی -->
+                            <form method="POST" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; gap: 10px;">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="edit_tip">
+                                <input type="hidden" name="tip_id" value="{{ tip.id }}">
+                                <input type="text" name="title" value="{{ tip.title }}" class="form-control" style="font-size: 13px; padding: 8px 12px;" required>
+                                <textarea name="content" class="form-control" style="font-size: 13px; padding: 8px 12px; min-height: 70px;" required>{{ tip.content }}</textarea>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <label style="font-size: 12px; color: #fff; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                        <input type="checkbox" name="is_active" {% if tip.is_active %}checked{% endif %} style="accent-color: #0dcaf0;"> فعال
+                                    </label>
+                                    <button type="submit" style="background: rgba(13,202,240,0.2); color: #0dcaf0; border: 1px solid rgba(13,202,240,0.4); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;">ویرایش و ذخیره</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="tip-actions">
+                            <form method="POST" onsubmit="return confirm('آیا از حذف این نکته اطمینان دارید؟');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete_tip">
+                                <input type="hidden" name="tip_id" value="{{ tip.id }}">
+                                <button type="submit" class="btn-danger-sm"><i class="bi bi-trash"></i> حذف</button>
+                            </form>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div style="text-align: center; color: #a3a1ad; padding: 30px;">هنوز نکته‌ای ثبت نشده است.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

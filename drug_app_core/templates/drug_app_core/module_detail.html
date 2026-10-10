@@ -8,62 +8,49 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
         body { 
-            background-color: #050505; color: #ededed; font-family: system-ui, sans-serif; 
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364) fixed; 
+            color: var(--text-color); font-family: system-ui, sans-serif; 
             margin: 0; padding: 0; padding-bottom: 120px; min-height: 100vh;
-        }
-        .bg-image-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            background-position: center; background-size: cover;
-        }
-        .bg-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(5,5,5,0.6) 0%, rgba(5,5,5,0.9) 100%); z-index: -1;
+            transition: color 0.3s ease;
         }
         .container { max-width: 800px; margin: 0 auto; padding: 30px 20px; box-sizing: border-box; }
         
         .page-header { margin-bottom: 20px; }
-        .page-title { font-size: 24px; font-weight: 700; color: #fff; margin-top: 10px; }
-        .back-link { color: #a3a1ad; text-decoration: none; font-size: 14px; transition: color 0.3s; }
-        .back-link:hover { color: #fff; }
+        .page-title { font-size: 24px; font-weight: 700; color: var(--header-title, #fff); margin-top: 10px; }
+        .back-link { color: var(--subtext-color, #a3a1ad); text-decoration: none; font-size: 14px; transition: color 0.3s; }
+        .back-link:hover { color: var(--header-title, #fff); }
 
         .question-card {
-            background: rgba(15, 15, 20, 0.65); backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px;
+            background: var(--card-bg); backdrop-filter: blur(14px);
+            border: 1px solid var(--border-color); border-radius: 20px;
             padding: 25px; margin-bottom: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
         .q-number { font-size: 13px; color: #0dcaf0; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .q-text { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 20px; line-height: 1.6; }
+        .q-text { font-size: 16px; font-weight: 600; color: var(--header-title, #fff); margin-bottom: 20px; line-height: 1.6; }
 
         .form-check {
-            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06);
+            background: var(--option-bg, rgba(255, 255, 255, 0.03)); border: 1px solid var(--border-color);
             padding: 12px 18px; border-radius: 12px; margin-bottom: 10px; transition: all 0.3s ease;
             display: flex; align-items: center; gap: 10px; cursor: pointer;
         }
-        .form-check:hover { background: rgba(255, 255, 255, 0.07); border-color: rgba(13, 202, 240, 0.3); }
+        .form-check:hover { background: var(--option-hover, rgba(255, 255, 255, 0.07)); border-color: rgba(13, 202, 240, 0.3); }
         .form-check input[type="radio"] { accent-color: #0dcaf0; width: 18px; height: 18px; }
-        .form-check label { color: #ededed; font-size: 14px; cursor: pointer; width: 100%; }
+        .form-check label { color: var(--text-color); font-size: 14px; cursor: pointer; width: 100%; }
 
         .explanation-box {
             background: rgba(13, 202, 240, 0.08); border: 1px solid rgba(13, 202, 240, 0.2);
-            padding: 15px; border-radius: 12px; margin-top: 20px; font-size: 14px; color: #a5f3fc; line-height: 1.5;
+            padding: 15px; border-radius: 12px; margin-top: 20px; font-size: 14px; color: #0dcaf0; line-height: 1.5;
         }
 
         .card-footer-action {
-            display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap; gap: 10px;
+            display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 10px;
         }
-        .drug-badge { background: rgba(255, 255, 255, 0.08); color: #ccc; padding: 6px 12px; border-radius: 50rem; font-size: 12px; }
-        
-        .btn-flashcard {
-            background: rgba(25, 135, 84, 0.2); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.4);
-            padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s;
-        }
-        .btn-flashcard:hover { background: #2ecc71; color: #fff; }
+        .drug-badge { background: var(--border-color); color: var(--subtext-color, #ccc); padding: 6px 12px; border-radius: 50rem; font-size: 12px; }
 
         .submit-all-btn {
             width: 100%; background: #0dcaf0; color: #000; border: none; padding: 16px;
             border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s;
-            box-shadow: 0 10px 25px rgba(13, 202, 240, 0.3); margin-top: 10px;
+            box-shadow: 0 10px 25px rgba(13, 202, 240, 0.3); margin-top: 10px; text-align: center; display: block; text-decoration: none; box-sizing: border-box;
         }
         .submit-all-btn:hover { background: #31d2f2; color: #fff; transform: translateY(-2px); }
 
@@ -71,25 +58,44 @@
         .bottom-nav {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             width: 90%; max-width: 600px;
-            background: rgba(15, 15, 20, 0.75); backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50rem;
+            background: var(--card-bg); backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color); border-radius: 50rem;
             display: flex; justify-content: space-around; align-items: center;
             padding: 10px 15px; z-index: 1000; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
         }
         .nav-item {
-            color: #a3a1ad; text-decoration: none; font-size: 12px; font-weight: 500;
+            color: var(--subtext-color, #a3a1ad); text-decoration: none; font-size: 12px; font-weight: 500;
             display: flex; flex-direction: column; align-items: center; gap: 4px;
             padding: 8px 14px; border-radius: 50rem; transition: all 0.3s ease;
         }
         .nav-item i { font-size: 20px; }
-        .nav-item:hover, .nav-item.active { color: #fff; background: rgba(13, 202, 240, 0.15); transform: translateY(-2px); }
+        .nav-item:hover, .nav-item.active { color: var(--header-title, #fff); background: rgba(13, 202, 240, 0.15); transform: translateY(-2px); }
         .nav-item.active { color: #0dcaf0; }
+
+        /* متغیرهای رنگی تم تاریک و روشن */
+        :root {
+            --text-color: #ededed;
+            --card-bg: rgba(15, 15, 20, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --header-title: #ffffff;
+            --subtext-color: #a3a1ad;
+            --option-bg: rgba(255, 255, 255, 0.03);
+            --option-hover: rgba(255, 255, 255, 0.07);
+        }
+
+        body.light-theme {
+            background: linear-gradient(135deg, #e0eafc, #cfdef3) fixed !important;
+            --text-color: #2c3e50;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --header-title: #1e293b;
+            --subtext-color: #64748b;
+            --option-bg: rgba(0, 0, 0, 0.03);
+            --option-hover: rgba(0, 0, 0, 0.06);
+        }
     </style>
 </head>
 <body>
-
-    <div class="bg-image-container"></div>
-    <div class="bg-overlay"></div>
 
     <div class="container">
         <div class="page-header">
@@ -106,7 +112,7 @@
 
                     {% if q.image %}
                         <div style="margin-bottom: 20px; text-align: center;">
-                            <img src="{{ q.image.url }}" alt="تصویر بالینی سوال" style="max-width: 100%; max-height: 350px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                            <img src="{{ q.image.url }}" alt="تصویر بالینی سوال" style="max-width: 100%; max-height: 350px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
                         </div>
                     {% endif %}
 
@@ -139,30 +145,59 @@
                     <div class="card-footer-action">
                         {% if submitted %}
                             <span class="drug-badge">تگ دارو: {{ q.drug_tag }}</span>
-                            <!-- ارسال نام دارو به فلش‌کارت جهت دریافت متن اصلی ادمین -->
-                            <button type="submit" name="action" value="add_flashcard" formaction="{% url 'module_detail' module.id %}" class="btn-flashcard" onclick="this.form.drug_name.value='{{ q.drug_tag }}';">
-                                ➕ افزودن "{{ q.drug_tag }}" به لایتنر
-                            </button>
                         {% else %}
-                            <span style="font-size: 12px; color: #a3a1ad; font-style: italic;">پس از ثبت پاسخ، تگ دارو و امکان افزودن به لایتنر نمایان می‌شود.</span>
+                            <span style="font-size: 12px; color: var(--subtext-color); font-style: italic;">پس از ثبت پاسخ، تگ دارو نمایان می‌شود.</span>
                         {% endif %}
                     </div>
                 </div>
             {% empty %}
-                <div style="text-align: center; color: #a3a1ad; padding: 40px; background: rgba(15,15,20,0.6); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08);">
+                <div style="text-align: center; color: var(--subtext-color); padding: 40px; background: var(--card-bg); border-radius: 20px; border: 1px solid var(--border-color);">
                     سوالی برای این مبحث ثبت نشده است.
                 </div>
             {% endfor %}
 
-            <input type="hidden" name="drug_name" value="">
-
             {% if questions and not submitted %}
                 <button type="submit" class="submit-all-btn">ثبت تست‌ها و دریافت پاداش سکه 🪙</button>
             {% elif submitted %}
-                <a href="{% url 'learning' %}" class="submit-all-btn" style="text-align: center; display: block; text-decoration: none;">بازگشت به لیست مباحث</a>
+                <a href="{% url 'learning' %}" class="submit-all-btn">بازگشت به لیست مباحث</a>
             {% endif %}
         </form>
     </div>
+
+    <!-- دکمه تغییر تم شب و روز -->
+    <button id="theme-toggle-btn" onclick="toggleTheme()" style="position: fixed; top: 20px; left: 20px; z-index: 2000; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.3s;">
+        <i id="theme-icon" class="bi bi-moon-fill" style="font-size: 18px;"></i>
+    </button>
+
+    <!-- اسکریپت مدیریت و ذخیره تم -->
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            body.classList.toggle('light-theme');
+            
+            if (body.classList.contains('light-theme')) {
+                localStorage.setItem('theme', 'light');
+                themeIcon.className = 'bi bi-sun-fill';
+            } else {
+                localStorage.setItem('theme', 'dark');
+                themeIcon.className = 'bi bi-moon-fill';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                if (themeIcon) themeIcon.className = 'bi bi-sun-fill';
+            } else {
+                if (themeIcon) themeIcon.className = 'bi bi-moon-fill';
+            }
+        });
+    </script>
 
     <!-- منوی پایین -->
     <nav class="bottom-nav">

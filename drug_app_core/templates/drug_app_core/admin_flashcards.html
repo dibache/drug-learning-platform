@@ -6,15 +6,21 @@
     <title>مدیریت فلش‌کارت‌ها - پنل مدیریت</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        body { background-color: #050505; color: #ededed; font-family: system-ui, sans-serif; margin: 0; padding: 0; min-height: 100vh; }
+        body { background-color: #050505; color: #ededed; font-family: system-ui, sans-serif; margin: 0; padding: 0; min-height: 100vh; padding-bottom: 50px; }
         .bg-image { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); background-size: cover; }
         .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.8); z-index: -1; }
-        .container { max-width: 850px; margin: 0 auto; padding: 40px 20px; box-sizing: border-box; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; box-sizing: border-box; }
         .card-box { background: rgba(15, 15, 20, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 30px; margin-bottom: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
-        .form-control, textarea { width: 100%; background: rgba(20,20,25,0.9); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 12px; border-radius: 10px; margin-bottom: 15px; box-sizing: border-box; }
-        .form-control:focus, textarea:focus { outline: none; border-color: #0dcaf0; box-shadow: 0 0 10px rgba(13,202,240,0.25); }
+        .form-control, textarea, select { width: 100%; background: rgba(20,20,25,0.9); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 12px; border-radius: 10px; margin-bottom: 15px; box-sizing: border-box; }
+        .form-control:focus, textarea:focus, select:focus { outline: none; border-color: #0dcaf0; box-shadow: 0 0 10px rgba(13,202,240,0.25); }
         .btn-custom { background: #0dcaf0; color: #000; padding: 12px 24px; border-radius: 10px; font-weight: bold; border: none; cursor: pointer; text-decoration: none; display: inline-block; transition: 0.3s; }
         .btn-custom:hover { background: #31d2f2; color: #fff; transform: translateY(-2px); }
+        .btn-green { background: #2ecc71; color: #fff; padding: 10px 20px; border-radius: 10px; font-weight: bold; border: none; cursor: pointer; transition: 0.3s; }
+        .btn-green:hover { background: #27ae60; }
+        .btn-danger { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.4); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-danger:hover { background: #e74c3c; color: #fff; }
+        
+        .list-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 12px 18px; border-radius: 12px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -22,23 +28,90 @@
     <div class="bg-overlay"></div>
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-            <h2>📦 افزودن و مدیریت فلش‌کارت‌های لایتنر</h2>
+            <h2>📦 مدیریت و ویرایش فلش‌کارت‌ها و دسته‌ها</h2>
             <a href="{% url 'custom_admin' %}" class="btn-custom" style="background: rgba(255,255,255,0.1); color:#fff;">← بازگشت به پنل</a>
         </div>
 
+        <!-- بخش اول: ایجاد دسته‌بندی جدید و لیست آن‌ها -->
         <div class="card-box">
-            <h3 style="margin-top: 0; font-size: 18px; color: #0dcaf0;">افزودن فلش‌کارت جدید برای دانشجویان</h3>
-            <!-- حتماً متد POST باشد -->
+            <h3 style="margin-top: 0; font-size: 18px; color: #2ecc71;">📁 مدیریت دسته‌بندی‌های بالینی</h3>
+            <form method="POST" style="margin-bottom: 20px;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_category">
+                <label style="font-size: 13px; color: #a3a1ad; display: block; margin-bottom: 5px;">نام دسته‌بندی جدید</label>
+                <input type="text" name="category_name" class="form-control" required placeholder="مثلاً قلب و عروق">
+                <button type="submit" class="btn-green">ایجاد دسته جدید</button>
+            </form>
+
+            <h4 style="font-size: 14px; color: #a3a1ad; margin-bottom: 10px;">دسته‌بندی‌های موجود:</h4>
+            <div>
+                {% for cat in categories %}
+                    <div class="list-item">
+                        <span>{{ cat.name }}</span>
+                        <form method="POST" style="margin: 0;" onsubmit="return confirm('آیا از حذف این دسته اطمینان دارید؟');">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delete_category">
+                            <input type="hidden" name="cat_id" value="{{ cat.id }}">
+                            <button type="submit" class="btn-danger">حذف دسته</button>
+                        </form>
+                    </div>
+                {% empty %}
+                    <p style="color: #a3a1ad; font-size: 13px;">هنوز دسته‌بندی ثبت نشده است.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- بخش دوم: افزودن فلش‌کارت -->
+        <div class="card-box">
+            <h3 style="margin-top: 0; font-size: 18px; color: #0dcaf0;">💊 افزودن فلش‌کارت جدید برای دانشجویان</h3>
             <form method="POST">
                 {% csrf_token %}
+                <input type="hidden" name="action" value="add_flashcard">
+
+                <label style="font-size: 13px; color: #a3a1ad; display: block; margin-bottom: 5px;">انتخاب دسته‌بندی بالینی</label>
+                <select name="category_id" class="form-control" required>
+                    <option value="" disabled selected>انتخاب کنید...</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}">{{ cat.name }}</option>
+                    {% empty %}
+                        <option value="" disabled>ابتدا یک دسته‌بندی ایجاد کنید</option>
+                    {% endfor %}
+                </select>
+
                 <label style="font-size: 13px; color: #a3a1ad; display: block; margin-bottom: 5px;">نام دارو (روی کارت)</label>
-                <input type="text" name="drug_name" class="form-control" required placeholder="مثلاً Amoxicillin">
+                <input type="text" name="drug_name" class="form-control" required placeholder="مثلاً Warfarin">
 
                 <label style="font-size: 13px; color: #a3a1ad; display: block; margin-bottom: 5px;">مشخصات و نکات بالینی دارو (پشت کارت)</label>
                 <textarea name="back_text" class="form-control" rows="4" required placeholder="نکات کلیدی، مکانیسم اثر و دوز دارو..."></textarea>
 
                 <button type="submit" class="btn-custom">ایجاد و انتشار فلش‌کارت</button>
             </form>
+        </div>
+
+        <!-- بخش سوم: لیست فلش‌کارت‌های موجود با قابلیت حذف -->
+        <div class="card-box">
+            <h3 style="margin-top: 0; font-size: 18px; color: #f39c12;">📋 لیست فلش‌کارت‌های مرجع ثبت شده</h3>
+            <div>
+                {% for card in flashcards %}
+                    <div class="list-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                        <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                            <div>
+                                <span style="background: rgba(13,202,240,0.15); color: #0dcaf0; padding: 3px 8px; border-radius: 6px; font-size: 11px;">{{ card.category.name|default:"بدون دسته" }}</span>
+                                <strong style="font-size: 16px; margin-right: 8px; color: #fff;">{{ card.drug_name }}</strong>
+                            </div>
+                            <form method="POST" style="margin: 0;" onsubmit="return confirm('آیا از حذف این فلش‌کارت اطمینان دارید؟');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete_flashcard">
+                                <input type="hidden" name="card_id" value="{{ card.id }}">
+                                <button type="submit" class="btn-danger">حذف کارت</button>
+                            </form>
+                        </div>
+                        <div style="font-size: 13px; color: #a3a1ad; line-height: 1.4;">{{ card.back_text|truncatechars:120 }}</div>
+                    </div>
+                {% empty %}
+                    <p style="color: #a3a1ad; font-size: 13px; text-align: center; padding: 20px;">هیچ فلش‌کارتی ثبت نشده است.</p>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </body>

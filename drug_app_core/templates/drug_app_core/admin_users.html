@@ -9,11 +9,17 @@
         body { background-color: #050505; color: #ededed; font-family: system-ui, sans-serif; margin: 0; padding: 0; min-height: 100vh; }
         .bg-image { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); background-size: cover; }
         .bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.8); z-index: -1; }
-        .container { max-width: 850px; margin: 0 auto; padding: 40px 20px; box-sizing: border-box; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; box-sizing: border-box; }
         .card-box { background: rgba(15, 15, 20, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 30px; margin-bottom: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
-        .user-row { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 15px 20px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-custom { background: #0dcaf0; color: #000; padding: 8px 16px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .user-row { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 18px 20px; border-radius: 14px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .btn-custom { background: #0dcaf0; color: #000; padding: 8px 16px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; text-decoration: none; transition: 0.3s; font-size: 13px; }
         .btn-custom:hover { background: #31d2f2; color: #fff; }
+        .btn-approve { background: rgba(46,204,113,0.2); color: #2ecc71; border: 1px solid rgba(46,204,113,0.4); }
+        .btn-approve:hover { background: #2ecc71; color: #fff; }
+        .btn-unapprove { background: rgba(241,196,15,0.2); color: #f1c40f; border: 1px solid rgba(241,196,15,0.4); }
+        .btn-unapprove:hover { background: #f1c40f; color: #000; }
+        .btn-delete { background: rgba(231,76,60,0.2); color: #e74c3c; border: 1px solid rgba(231,76,60,0.4); }
+        .btn-delete:hover { background: #e74c3c; color: #fff; }
     </style>
 </head>
 <body>
@@ -21,7 +27,7 @@
     <div class="bg-overlay"></div>
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-            <h2>👥 مدیریت دانشجویان و اعطای سکه</h2>
+            <h2>👥 مدیریت دانشجویان و تایید حساب‌ها</h2>
             <a href="{% url 'custom_admin' %}" class="btn-custom" style="background: rgba(255,255,255,0.1); color:#fff;">← بازگشت به پنل</a>
         </div>
 
@@ -30,15 +36,45 @@
             {% for p in profiles %}
                 <div class="user-row">
                     <div>
-                        <strong>{{ p.full_name }}</strong>
-                        <div style="font-size: 12px; color: #a3a1ad; margin-top: 3px;">شماره دانشجویی: {{ p.student_id }} | 🪙 سکه فعلی: {{ p.coins }}</div>
+                        <strong style="font-size: 16px; color: #fff;">{{ p.full_name }}</strong>
+                        <div style="font-size: 12px; color: #a3a1ad; margin-top: 4px;">
+                            شماره دانشجویی: {{ p.student_id }} | 🪙 سکه: {{ p.coins }} | وضعیت: 
+                            {% if p.is_approved %}
+                                <span style="color: #2ecc71; font-weight: bold;">تایید شده ✅</span>
+                            {% else %}
+                                <span style="color: #f39c12; font-weight: bold;">در انتظار تایید ادمین ⏳</span>
+                            {% endif %}
+                        </div>
                     </div>
-                    <form method="POST" style="display: flex; gap: 8px; align-items: center;">
-                        {% csrf_token %}
-                        <input type="hidden" name="user_id" value="{{ p.id }}">
-                        <input type="number" name="coins_delta" value="10" style="width: 70px; background: rgba(20,20,25,0.9); border: 1px solid rgba(255,255,255,0.15); color:#fff; padding: 6px; border-radius: 6px; text-align: center;">
-                        <button type="submit" class="btn-custom">افزودن سکه</button>
-                    </form>
+                    
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <!-- فرم افزودن سکه -->
+                        <form method="POST" style="display: flex; gap: 6px; align-items: center; margin: 0;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="update_coins">
+                            <input type="hidden" name="user_id" value="{{ p.id }}">
+                            <input type="number" name="coins_delta" value="10" style="width: 60px; background: rgba(20,20,25,0.9); border: 1px solid rgba(255,255,255,0.15); color:#fff; padding: 6px; border-radius: 6px; text-align: center;">
+                            <button type="submit" class="btn-custom">سکه</button>
+                        </form>
+
+                        <!-- فرم تایید یا لغو تایید حساب -->
+                        <form method="POST" style="margin: 0;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="toggle_approve">
+                            <input type="hidden" name="user_id" value="{{ p.id }}">
+                            <button type="submit" class="btn-custom {% if p.is_approved %}btn-unapprove{% else %}btn-approve{% endif %}">
+                                {% if p.is_approved %}لغو تایید{% else %}تایید حساب{% endif %}
+                            </button>
+                        </form>
+
+                        <!-- فرم حذف کاربر -->
+                        <form method="POST" style="margin: 0;" onsubmit="return confirm('آیا از حذف کامل این کاربر و اطلاعات او اطمینان دارید؟');">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delete_user">
+                            <input type="hidden" name="user_id" value="{{ p.id }}">
+                            <button type="submit" class="btn-custom btn-delete">حذف</button>
+                        </form>
+                    </div>
                 </div>
             {% empty %}
                 <p style="color: #a3a1ad; text-align: center;">هیچ دانشجویی ثبت‌نام نکرده است.</p>

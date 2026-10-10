@@ -1,0 +1,341 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آزمون و مرور لایتنر - سامانه اطلاعات دارویی</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { 
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364) fixed; 
+            color: var(--text-color); font-family: system-ui, sans-serif; 
+            margin: 0; padding: 0; padding-bottom: 120px; min-height: 100vh;
+            transition: color 0.3s ease;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 30px 20px; box-sizing: border-box; }
+
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .page-title-box h2 { font-size: 24px; font-weight: 700; color: var(--header-title, #fff); margin: 0 0 5px 0; }
+        .page-title-box p { font-size: 13px; color: var(--subtext-color, #a3a1ad); margin: 0; }
+
+        .back-btn-top { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s; }
+        .back-btn-top:hover { background: var(--border-color); border-color: #0dcaf0; color: #0dcaf0; }
+
+        .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .cat-card {
+            background: var(--card-bg); backdrop-filter: blur(14px);
+            border: 1px solid var(--border-color); border-radius: 20px;
+            padding: 22px; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .cat-card:hover { transform: translateY(-4px); border-color: rgba(13,202,240,0.4); background: var(--card-bg); }
+
+        .cat-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .drug-count { font-size: 12px; color: var(--subtext-color, #a3a1ad); font-weight: 600; }
+        .cat-icon-box { width: 40px; height: 40px; border-radius: 12px; background: rgba(13,202,240,0.15); display: flex; align-items: center; justify-content: center; color: #0dcaf0; font-size: 20px; }
+
+        .cat-info h3 { font-size: 16px; font-weight: 700; color: var(--header-title, #fff); margin: 0 0 4px 0; }
+        .cat-info span { font-size: 11px; color: var(--subtext-color, #a3a1ad); }
+
+        .progress-box { margin-top: 15px; }
+        .progress-bar-bg { width: 100%; height: 6px; background: var(--border-color); border-radius: 10px; overflow: hidden; margin-bottom: 6px; }
+        .progress-bar-fill { height: 100%; background: #0dcaf0; border-radius: 10px; transition: width 0.4s ease; }
+        .progress-text { display: flex; justify-content: space-between; font-size: 11px; color: var(--subtext-color, #a3a1ad); }
+
+        .back-btn { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; text-decoration: none; }
+        .back-btn:hover { background: var(--border-color); }
+
+        .flashcard-scene { width: 100%; height: 280px; perspective: 1000px; margin-bottom: 20px; cursor: pointer; }
+        .flashcard-card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s ease; }
+        .flashcard-card.is-flipped { transform: rotateY(180deg); }
+
+        .card-face {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            background: var(--card-bg); backdrop-filter: blur(14px);
+            border: 1px solid var(--border-color); border-radius: 20px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 30px; box-sizing: border-box; box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+        .card-face.back { transform: rotateY(180deg); overflow-y: auto; text-align: right; }
+
+        .card-front-content { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; }
+        .card-front-title { font-size: 28px; font-weight: 700; color: #0dcaf0; margin-top: 10px; }
+
+        .card-back-title { font-size: 16px; font-weight: 700; color: #0dcaf0; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .card-back-body { font-size: 15px; color: var(--text-color); line-height: 1.6; flex-grow: 1; white-space: pre-line; }
+
+        .quiz-buttons { display: flex; gap: 10px; border-top: 1px solid var(--border-color); padding-top: 12px; }
+        .btn-known { flex: 1; background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.4); padding: 10px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-known:hover { background: #2ecc71; color: #fff; }
+        .btn-unknown { flex: 1; background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.4); padding: 10px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-unknown:hover { background: #e74c3c; color: #fff; }
+
+        .bottom-nav {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 600px;
+            background: var(--card-bg); backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color); border-radius: 50rem;
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 10px 15px; z-index: 1000; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+        .nav-item { color: var(--subtext-color, #a3a1ad); text-decoration: none; font-size: 12px; font-weight: 500; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 14px; border-radius: 50rem; transition: all 0.3s ease; }
+        .nav-item i { font-size: 20px; }
+        .nav-item:hover, .nav-item.active { color: var(--header-title, #fff); background: rgba(13, 202, 240, 0.15); transform: translateY(-2px); }
+        .nav-item.active { color: #0dcaf0; }
+
+        /* متغیرهای رنگی تم تاریک و روشن */
+        :root {
+            --text-color: #ededed;
+            --card-bg: rgba(15, 15, 20, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --header-title: #ffffff;
+            --subtext-color: #a3a1ad;
+        }
+
+        body.light-theme {
+            background: linear-gradient(135deg, #e0eafc, #cfdef3) fixed !important;
+            --text-color: #2c3e50;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --header-title: #1e293b;
+            --subtext-color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="page-title-box">
+                <h2>🧠 آزمون و مرور لایتنر بالینی</h2>
+                <p>محک زدن دانش دارویی بر اساس دسته‌بندی‌ها</p>
+            </div>
+            <a href="{% url 'learning' %}" class="back-btn-top">
+                <i class="bi bi-arrow-right"></i> بازگشت به یادگیری
+            </a>
+        </div>
+
+        <div id="cat-selection-view">
+            <div class="category-grid">
+                {% for item in category_data %}
+                    <div class="cat-card" onclick="startQuiz('{{ item.category.id }}', '{{ item.category.name }}')">
+                        <div class="cat-header">
+                            <span class="drug-count">{{ item.total }} دارو</span>
+                            <div class="cat-icon-box">
+                                <i class="bi bi-stack"></i>
+                            </div>
+                        </div>
+                        <div class="cat-info">
+                            <h3>{{ item.category.name }}</h3>
+                            <span>مرور فعال لایتنر</span>
+                        </div>
+                        <div class="progress-box">
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" style="width: {{ item.percentage }}%;"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span>میزان تسلط</span>
+                                <span>{{ item.percentage }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div style="grid-column: 1 / -1; text-align: center; color: var(--subtext-color); padding: 40px;">
+                        هنوز دسته‌بندی توسط مدیر ثبت نشده است.
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div id="quiz-session-view" style="display: none;">
+            <button class="back-btn" onclick="location.reload()"><i class="bi bi-arrow-right"></i> بازگشت به دسته‌ها</button>
+            <h3 id="quiz-category-title" style="color: #0dcaf0; margin-bottom: 20px;"></h3>
+            <div id="quiz-card-container"></div>
+        </div>
+    </div>
+
+    <!-- اطلاعات خام کارت‌ها برای جاوااسکریپت -->
+    <div id="raw-quiz-cards" style="display:none;">
+        {% for card in admin_cards %}
+            <div class="quiz-raw" data-cat-id="{{ card.category.id }}" data-drug="{{ card.drug_name }}" data-back="{{ card.back_text|escapejs }}"></div>
+        {% endfor %}
+    </div>
+
+    <input type="hidden" id="csrf_token_val" value="{{ csrf_token }}">
+
+    <!-- دکمه تغییر تم شب و روز -->
+    <button id="theme-toggle-btn" onclick="toggleTheme()" style="position: fixed; top: 20px; left: 20px; z-index: 2000; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.3s;">
+        <i id="theme-icon" class="bi bi-moon-fill" style="font-size: 18px;"></i>
+    </button>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            body.classList.toggle('light-theme');
+            
+            if (body.classList.contains('light-theme')) {
+                localStorage.setItem('theme', 'light');
+                themeIcon.className = 'bi bi-sun-fill';
+            } else {
+                localStorage.setItem('theme', 'dark');
+                themeIcon.className = 'bi bi-moon-fill';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                if (themeIcon) themeIcon.className = 'bi bi-sun-fill';
+            } else {
+                if (themeIcon) themeIcon.className = 'bi bi-moon-fill';
+            }
+        });
+
+        let currentQuizCards = [];
+        let currentIndex = 0;
+        let activeCategoryId = null;
+
+        function startQuiz(catId, catName) {
+            activeCategoryId = catId;
+            document.getElementById('cat-selection-view').style.display = 'none';
+            document.getElementById('quiz-session-view').style.display = 'block';
+            document.getElementById('quiz-category-title').innerText = 'مبحث: ' + catName;
+
+            const rawCards = document.querySelectorAll('#raw-quiz-cards .quiz-raw');
+            currentQuizCards = [];
+            rawCards.forEach(rc => {
+                if(rc.getAttribute('data-cat-id') === catId) {
+                    currentQuizCards.push({
+                        drug: rc.getAttribute('data-drug'),
+                        back: rc.getAttribute('data-back'),
+                        catId: catId
+                    });
+                }
+            });
+            currentIndex = 0;
+            renderQuizCard();
+        }
+
+        function renderQuizCard() {
+            const container = document.getElementById('quiz-card-container');
+            if(currentQuizCards.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: var(--subtext-color); padding: 40px; background: var(--card-bg); border-radius: 20px;">کارتی در این دسته ثبت نشده است.</div>`;
+                return;
+            }
+
+            if(currentIndex >= currentQuizCards.length) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: #0dcaf0; padding: 50px; background: var(--card-bg); border-radius: 20px;">
+                        <h3>🎉 آزمون این دسته به پایان رسید!</h3>
+                        <p style="color: var(--subtext-color); margin-bottom: 20px;">عملکرد شما ثبت شد و نوار تسلط به‌روزرسانی گردید.</p>
+                        <button class="back-btn" onclick="location.reload()" style="margin: 0 auto;">بازگشت به دسته‌ها</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const card = currentQuizCards[currentIndex];
+            
+            const cleanBackText = card.back
+                .replace(/\\u[0-9a-fA-F]{4}/g, '')
+                .replace(/\\u000D\\u000A/g, '\n')
+                .replace(/\\u000A/g, '\n')
+                .replace(/\\n/g, '\n');
+
+            const safeDrug = card.drug.replace(/'/g, "\\'");
+            const safeBack = cleanBackText.replace(/'/g, "\\'").replace(/\n/g, "\\n");
+
+            container.innerHTML = `
+                <div class="flashcard-scene" onclick="this.querySelector('.flashcard-card').classList.toggle('is-flipped')">
+                    <div class="flashcard-card">
+                        <div class="card-face front">
+                            <div style="font-size: 12px; color: #0dcaf0;">برای دیدن پاسخ کلیک کنید 🔄</div>
+                            <div class="card-front-content">
+                                <i class="bi bi-capsule" style="font-size: 48px; color: #0dcaf0;"></i>
+                                <div class="card-front-title">${card.drug}</div>
+                            </div>
+                            <div style="font-size: 11px; color: var(--subtext-color); text-align: center;">سوال ${currentIndex + 1} از ${currentQuizCards.length}</div>
+                        </div>
+                        <div class="card-face back">
+                            <div>
+                                <div class="card-back-title">
+                                    <span>${card.drug} (مشخصات بالینی)</span>
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </div>
+                                <div class="card-back-body">${cleanBackText}</div>
+                            </div>
+                            <div class="quiz-buttons" onclick="event.stopPropagation();">
+                                <button type="button" class="btn-unknown" onclick="submitQuizAnswer('${card.catId}', '${safeDrug}', '${safeBack}', 'unknown')">
+                                    <i class="bi bi-x-circle"></i> بلد نبودم (افزودن به ضعف)
+                                </button>
+                                <button type="button" class="btn-known" onclick="submitQuizAnswer('${card.catId}', '${safeDrug}', '${safeBack}', 'known')">
+                                    <i class="bi bi-check-circle"></i> بلد بودم
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function submitQuizAnswer(catId, drugName, backText, result) {
+            const csrfToken = document.getElementById('csrf_token_val').value;
+            const formData = new FormData();
+            formData.append('action', 'submit_answer');
+            formData.append('category_id', catId);
+            formData.append('drug_name', drugName);
+            formData.append('back_text', backText);
+            formData.append('result', result);
+            formData.append('csrfmiddlewaretoken', csrfToken);
+
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': csrfToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                currentIndex++;
+                renderQuizCard();
+            })
+            .catch(error => {
+                currentIndex++;
+                renderQuizCard();
+            });
+        }
+    </script>
+
+    <nav class="bottom-nav">
+        <a href="{% url 'dashboard' %}" class="nav-item">
+            <i class="bi bi-house-door-fill"></i>
+            <span>خانه</span>
+        </a>
+        <a href="{% url 'learning' %}" class="nav-item">
+            <i class="bi bi-book-fill"></i>
+            <span>یادگیری</span>
+        </a>
+        <a href="{% url 'flashcards' %}" class="nav-item">
+            <i class="bi bi-layers-fill"></i>
+            <span>لایتنر</span>
+        </a>
+        <a href="{% url 'ranking' %}" class="nav-item">
+            <i class="bi bi-trophy-fill"></i>
+            <span>لیگ</span>
+        </a>
+        <a href="{% url 'profile' %}" class="nav-item">
+            <i class="bi bi-person-circle"></i>
+            <span>پروفایل</span>
+        </a>
+    </nav>
+
+</body>
+</html>

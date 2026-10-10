@@ -61,12 +61,20 @@
                 <div class="stat-badge">{{ questions_count }} سوال ثبت شده</div>
             </a>
 
-            <!-- مدیریت فلش‌کارت‌ها (جدید) -->
+            <!-- مدیریت فلش‌کارت‌ها -->
             <a href="{% url 'admin_flashcards' %}" class="admin-card">
                 <i class="bi bi-layers-fill"></i>
                 <div class="card-title">مدیریت فلش‌کارت‌های لایتنر</div>
                 <div class="card-desc">افزودن فلش‌کارت و نکات بالینی اختصاصی به جعبه لایتنر کاربران</div>
                 <div class="stat-badge">{{ flashcards_count }} فلش‌کارت</div>
+            </a>
+
+            <!-- مدیریت نکات روزمره (جدید) -->
+            <a href="{% url 'admin_dailytips' %}" class="admin-card">
+                <i class="bi bi-lightbulb-fill"></i>
+                <div class="card-title">مدیریت نکات روزمره بالینی</div>
+                <div class="card-desc">افزودن، ویرایش و حذف نکات کوتاه برای نمایش در داشبورد کاربران</div>
+                <div class="stat-badge">{{ tips_count|default:0 }} نکته ثبت شده</div>
             </a>
 
             <!-- مدیریت کاربران -->
